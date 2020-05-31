@@ -2,8 +2,11 @@ const app = require('../../app');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const expect = chai.expect;
+const mongoose = require('mongoose');
+const Tweet = require('../../models/tweet');
+const {expectJson, createTweet} = require('./utils/index');
+const expectedNotFoundError = {message: 'Tweet not found'};
 
-const { expectJson, createTweet } = require('./utils/index');
 chai.use(chaiHttp);
 
 describe('tweet, GET: /tweets', () => {
@@ -61,3 +64,33 @@ describe('tweet, POST: /tweets', () => {
     expect(createdTweet).to.has.property('tweet', 'Ciao a tutti');
   });
 });
+
+describe('GET: /tweets/:id', () => {
+    it('Returns status 404 if tweet is missing', async () => {
+      const newObjectId = mongoose.Types.ObjectId();
+      const result = await chai.request(app)
+          .get(`/tweets/${newObjectId}`);
+      expectJson(result);
+      expect(result.status).to.be.equal(404);
+      expect(result).to.have.property('body');
+      expect(result.body).to.be.deep.equals(expectedNotFoundError);
+    });
+
+    describe('Tweets inside database', () => {
+        let createdTweet = undefined;
+        before('Create tweet', async () => {
+          createdTweet = await createTweet();
+        });
+        after('Delete tweet', () => {
+        createdTweet ? createdTweet.remove() : console.log('missing tweet');
+        });
+        it('Return expected tweet from database', async () => {
+          const result = await chai.request(app)
+            .get(`/tweet/${createdTweet._id}`);
+          expectJson(result);
+          expect(result.status).to.be.equal(404);
+        });
+    });
+});
+
+
