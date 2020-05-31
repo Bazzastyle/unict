@@ -1,9 +1,7 @@
 const chai = require('chai');
 const expect = chai.expect;
-
 const User = require('../../../models/user');
 const mongoose = require('mongoose');
-
 const Tweet = require('../../../models/tweet');
 
 module.exports.expectJson = function (request) {
