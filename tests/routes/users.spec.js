@@ -10,7 +10,7 @@ const { expectJson, createUser } = require('./utils/index');
 
 chai.use(chaiHttp);
 
-
+//Test: Describe to test array of users is empty
 describe('get / ', () => {
     it('User get:/users If array of users is empty return 200', async () => {
         const result = await chai.request(app).get('/users');
@@ -18,6 +18,9 @@ describe('get / ', () => {
         expect(result.body).to.be.instanceOf(Array);
         expect(result.body).to.has.lengthOf(0);
     });
+
+    //Test adding a user and check if the lenght of array is 1 and then
+    //delete in the after the user created to clean the test
     describe('Create user', () => {
         let createdUser = undefined;
         before('create user by createUser()', async () => {
@@ -35,7 +38,7 @@ describe('get / ', () => {
         });
     });
 });
-
+//Test to delete a user that doesn't exist
 describe('delete /users/:id', () => {
     it('should return 404 status if user don\'t exists', async () => {
         const newObjectId = mongoose.Types.ObjectId();
@@ -45,6 +48,7 @@ describe('delete /users/:id', () => {
         expect(result).to.have.property('body');
         expect(result.body).to.be.deep.equals(expectedNotFoundError);
     });
+    //Test to delete a user that exist and than delete the user to clean the test
     describe('With an existing user', () => {
         let createdUser = undefined;
         before('create user', async () => {
