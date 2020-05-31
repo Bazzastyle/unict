@@ -18,7 +18,7 @@ router.get('/', function (req, res, next) {
 router.get('/:id', function (req, res, next) {
   User.findOne({ _id: req.params.id }, "-password", function (err, user) {
     if (err) return res.status(500).json({ error: err });
-    if (!user) return res.status(404).json({ message: 'User not found' })
+    if (!user) return res.status(404).json({ message: 'User non found' })
     res.json(user);
   });
 });
@@ -59,7 +59,7 @@ router.put('/:id', autenticationMiddleware.isAuth, function (request, response, 
   User.findOne({ _id: request.params.id })
     .exec(function (err, user) {
       if (err) return response.status(500).json({ error: err });
-      if (!user) return response.status(404).json({ message: 'User not found' })
+      if (!user) return response.status(404).json({ message: 'User non found' })
       for (key in request.body) {
         user[key] = request.body[key];
       }
